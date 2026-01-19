@@ -1,5 +1,5 @@
 // Inspired by c_quadtree: https://github.com/supahero1/quadtree
-use common::shapes::{Rectangle, ShapeEnum};
+use quadtree::shapes::{Rectangle, ShapeEnum};
 use quadtree::quadtree::{Config, EntityTypeUpdate, QuadTree};
 use rand::prelude::*;
 use std::env;

@@ -1,6 +1,6 @@
 use crate::error::QuadtreeResult;
 use crate::quadtree::{validate_circle_radius, validate_rect_dims};
-use common::shapes::{Circle, Rectangle, ShapeEnum};
+use crate::shapes::{Circle, Rectangle, ShapeEnum};
 
 // Check that Rectangle inner is fully contained in Rectangle outer, including on the boundary
 pub fn rectangle_contains_rectangle(outer: &Rectangle, inner: &Rectangle) -> QuadtreeResult<bool> {

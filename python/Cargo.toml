@@ -2,11 +2,10 @@
 name = "bolt_quadtree"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
-pyo3 = { version = "0.27.2", features = ["extension-module"] }
-
-common = { path = "../common" }
-quadtree = { path = "../quadtree" }
+pyo3 = { version = "0.27.2", features = ["extension-module", "abi3-py310"] }
+quadtree = { package = "bolt-quadtree", path = ".." }
 [lib]
 crate-type = ["cdylib"]

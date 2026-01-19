@@ -1,4 +1,4 @@
-use common::shapes::*;
+use quadtree::shapes::*;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 

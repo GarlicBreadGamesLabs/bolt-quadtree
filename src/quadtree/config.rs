@@ -31,7 +31,7 @@ impl Default for Config {
     }
 }
 
-use common::shapes::ShapeEnum;
+use crate::shapes::ShapeEnum;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EntityTypeUpdate {

@@ -1,6 +1,6 @@
 use super::QuadTreeInner;
 use crate::error::{QuadtreeError, QuadtreeResult};
-use common::shapes::{Rectangle, ShapeEnum};
+use crate::shapes::{Rectangle, ShapeEnum};
 use smallvec::SmallVec;
 
 pub(crate) const FLAG_LEFT: u8 = 0b0001;

@@ -1,6 +1,6 @@
 use super::{Config, EntityTypeUpdate, QuadTree, QuadTreeInner, QueryStats, RelocationRequest};
 use crate::error::QuadtreeResult;
-use common::shapes::{Rectangle, ShapeEnum};
+use crate::shapes::{Rectangle, ShapeEnum};
 use std::cell::RefCell;
 
 impl QuadTree {

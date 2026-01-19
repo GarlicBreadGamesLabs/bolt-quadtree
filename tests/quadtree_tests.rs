@@ -1,4 +1,4 @@
-use common::shapes::{Circle, Rectangle, ShapeEnum};
+use quadtree::shapes::{Circle, Rectangle, ShapeEnum};
 use quadtree::collision_detection::shape_shape;
 use quadtree::quadtree::{Config, EntityTypeUpdate, QuadTree, RelocationRequest};
 

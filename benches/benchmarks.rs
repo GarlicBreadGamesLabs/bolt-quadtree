@@ -1,4 +1,4 @@
-use common::shapes::{Rectangle, ShapeEnum};
+use quadtree::shapes::{Rectangle, ShapeEnum};
 use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion};
 use quadtree::quadtree::{Config, EntityTypeUpdate, QuadTree, RelocationRequest};
 use rand::prelude::*;

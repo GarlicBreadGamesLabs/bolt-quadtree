@@ -1,5 +1,5 @@
 use super::*;
-use common::shapes::{Circle, Rectangle, ShapeEnum};
+use crate::shapes::{Circle, Rectangle, ShapeEnum};
 
 impl QuadTreeInner {
     fn for_each_collision_pair_rect_fast<F>(&mut self, f: &mut F)

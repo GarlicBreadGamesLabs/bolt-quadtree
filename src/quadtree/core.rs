@@ -1,6 +1,6 @@
 use super::*;
 use crate::error::{QuadtreeError, QuadtreeResult};
-use common::shapes::{Rectangle, ShapeEnum};
+use crate::shapes::{Rectangle, ShapeEnum};
 use fxhash::FxHashMap;
 
 impl QuadTreeInner {

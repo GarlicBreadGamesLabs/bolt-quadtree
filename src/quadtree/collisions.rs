@@ -1,6 +1,6 @@
 use super::*;
 use crate::error::QuadtreeResult;
-use common::shapes::ShapeEnum;
+use crate::shapes::ShapeEnum;
 
 impl QuadTreeInner {
     pub fn collisions_batch(&mut self, shapes: &[ShapeEnum]) -> QuadtreeResult<Vec<Vec<u32>>> {

@@ -1,4 +1,4 @@
-use common::shapes::{Circle, Rectangle, ShapeEnum};
+use quadtree::shapes::{Circle, Rectangle, ShapeEnum};
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 use pyo3::pymethods;
