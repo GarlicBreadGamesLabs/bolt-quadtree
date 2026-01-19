@@ -1,59 +1,21 @@
-use ::collisions::ShapeWithPosition;
 use common::shapes::{Circle, Rectangle, ShapeEnum};
-use parry2d::math::{Isometry, Vector};
-use parry2d::shape::{Ball, Cuboid, SharedShape};
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 use pyo3::pymethods;
 use pyo3::types::{PyList, PyListMethods, PyModule, PyModuleMethods};
 use pyo3::{Bound, PyResult, Python};
-use rand::rngs::StdRng;
-use rand::SeedableRng;
 
-mod collisions;
-mod netcode;
 mod quadtree;
-mod serialization;
 
-use crate::collisions::get_mtv;
-use crate::netcode::NetCodec;
 use crate::quadtree::{PyConfig, QuadTreeWrapper};
-use crate::serialization::DiffFieldSetWrapper;
 
 #[pymodule]
-fn pycollisions(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(get_mtv, m)?)?;
-    Ok(())
-}
-
-#[pymodule]
-fn pyquadtree(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn bolt_quadtree(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<QuadTreeWrapper>()?;
     m.add_class::<PyConfig>()?;
-    Ok(())
-}
-
-#[pymodule]
-fn pyserialization(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_class::<DiffFieldSetWrapper>()?;
-    Ok(())
-}
-
-#[pymodule]
-fn bolt(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    let submod_collisions = PyModule::new(py, "collisions")?;
-    pycollisions(py, &submod_collisions)?;
-    m.add_submodule(&submod_collisions)?;
-
-    m.add_class::<QuadTreeWrapper>()?;
-    m.add_class::<PyConfig>()?;
-    m.add_class::<DiffFieldSetWrapper>()?;
-    m.add_class::<NetCodec>()?;
 
     m.add_class::<PyCircle>()?;
     m.add_class::<PyRectangle>()?;
-    m.add_class::<PySquare>()?;
-    m.add_class::<PyRng>()?;
 
     Ok(())
 }
@@ -74,32 +36,6 @@ impl PyCircle {
     #[new]
     pub fn new(x: f32, y: f32, radius: f32) -> Self {
         PyCircle { x, y, radius }
-    }
-}
-
-#[derive(Clone, Debug)]
-#[pyclass(name = "Square")]
-pub struct PySquare {
-    #[pyo3(get, set)]
-    pub x: f32,
-    #[pyo3(get, set)]
-    pub y: f32,
-    #[pyo3(get, set)]
-    pub radius: f32,
-    #[pyo3(get, set)]
-    pub angle: f32,
-}
-
-#[pymethods]
-impl PySquare {
-    #[new]
-    pub fn new(x: f32, y: f32, radius: f32, angle: f32) -> Self {
-        PySquare {
-            x,
-            y,
-            radius,
-            angle,
-        }
     }
 }
 
@@ -198,33 +134,10 @@ impl PyRectangle {
         self.rectangle.expand_to_include(&other.rectangle)
     }
 
-    pub fn get_random_circle_coords_inside(&mut self, radius: f32, rng: &mut PyRng) -> (f32, f32) {
-        self.rectangle
-            .get_random_circle_coords_inside(radius, &mut rng.rng)
-    }
-
     pub fn copy(&self) -> PyRectangle {
         PyRectangle {
             rectangle: self.rectangle.clone(),
         }
-    }
-}
-
-#[pyclass(name = "Rng")]
-pub struct PyRng {
-    rng: StdRng,
-}
-
-#[pymethods]
-impl PyRng {
-    #[new]
-    pub fn new() -> Self {
-        let rng = StdRng::from_entropy();
-        Self { rng }
-    }
-
-    pub fn seed_rng(&mut self, seed: u64) {
-        self.rng = StdRng::seed_from_u64(seed);
     }
 }
 
@@ -241,30 +154,6 @@ fn extract_shape(py: Python, shape: Py<PyAny>) -> PyResult<ShapeEnum> {
         Err(PyTypeError::new_err(
             "Expected a Rectangle or Circle object",
         ))
-    }
-}
-
-fn extract_shape_ncollide(py: Python, shape: Py<PyAny>) -> PyResult<ShapeWithPosition> {
-    if let Ok(py_square) = shape.extract::<PySquare>(py) {
-        return Ok(ShapeWithPosition {
-            shape: SharedShape::new(Cuboid::new(Vector::new(py_square.radius, py_square.radius))),
-            position: Isometry::new(Vector::new(py_square.x, py_square.y), py_square.angle),
-        });
-    }
-
-    let shape = extract_shape(py, shape)?;
-    match shape {
-        ShapeEnum::Circle(shape) => Ok(ShapeWithPosition {
-            shape: SharedShape::new(Ball::new(shape.radius)),
-            position: Isometry::translation(shape.x, shape.y),
-        }),
-        ShapeEnum::Rectangle(shape) => Ok(ShapeWithPosition {
-            shape: SharedShape::new(Cuboid::new(Vector::new(
-                shape.width / 2.0,
-                shape.height / 2.0,
-            ))),
-            position: Isometry::translation(shape.x, shape.y),
-        }),
     }
 }
 
