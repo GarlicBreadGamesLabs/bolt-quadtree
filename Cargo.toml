@@ -8,7 +8,7 @@ repository = "https://github.com/GarlicBreadGamesLabs/bolt-quadtree"
 readme = "README.md"
 description = "High-performance loose quadtree for 2D collision queries."
 keywords = ["quadtree", "spatial", "collision", "gamedev"]
-categories = ["game-development", "data-structures", "science"]
+categories = ["game-development", "data-structures", "algorithms"]
 
 [lib]
 name = "quadtree"
