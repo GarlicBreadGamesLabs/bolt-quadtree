@@ -1,12 +1,11 @@
 bolt-quadtree
 =============
 
-High-performance loose quadtree implementation in Rust with optional Python bindings.
+High-performance loose quadtree implementation in Rust.
 
 Crates
 ------
 - Rust crate: `bolt-quadtree` (library name `quadtree`)
-- Python extension: `bolt_quadtree`
 
 Rust usage
 ----------
@@ -27,17 +26,6 @@ fn main() -> quadtree::QuadtreeResult<()> {
     tree.relocate(1, ShapeEnum::Rectangle(Rectangle::new(30.0, 30.0, 5.0, 5.0)), EntityTypeUpdate::Preserve)?;
     Ok(())
 }
-```
-
-Python usage
-------------
-```python
-import bolt_quadtree as qt
-
-bounds = qt.Rectangle(0.0, 0.0, 100.0, 100.0)
-tree = qt.QuadTree(bounds)
-tree.insert(1, qt.Rectangle(10.0, 10.0, 5.0, 5.0))
-hits = tree.collisions(qt.Rectangle(10.0, 10.0, 2.0, 2.0))
 ```
 
 License

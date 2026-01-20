@@ -34,4 +34,4 @@ harness = false
 
 [workspace]
 resolver = "2"
-members = [".", "python", "benchmarks"]
+members = [".", "benchmarks"]
