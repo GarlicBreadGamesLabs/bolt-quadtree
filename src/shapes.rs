@@ -58,8 +58,8 @@ impl Circle {
     // Helper method to update the bounding box
     fn update_bounding_box(&mut self) {
         self.bounding_box = Rectangle {
-            x: self.x - self.radius,
-            y: self.y - self.radius,
+            x: self.x,
+            y: self.y,
             width: self.radius * 2.0,
             height: self.radius * 2.0,
         };

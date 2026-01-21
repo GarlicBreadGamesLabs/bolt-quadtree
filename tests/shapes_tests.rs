@@ -18,6 +18,17 @@ fn test_new_and_getters() {
 }
 
 #[test]
+fn test_circle_update_bounding_box_uses_center() {
+    let mut circle = Circle::new(10.0, 20.0, 3.0);
+    circle.update(12.0, 24.0);
+    let bbox = circle.bounding_box();
+    assert_eq!(bbox.x, 12.0);
+    assert_eq!(bbox.y, 24.0);
+    assert_eq!(bbox.width, 6.0);
+    assert_eq!(bbox.height, 6.0);
+}
+
+#[test]
 fn test_contains_point_center() {
     let rect = Rectangle::new(0.0, 0.0, 4.0, 6.0);
     assert!(rect.contains_point(0.0, 0.0));
