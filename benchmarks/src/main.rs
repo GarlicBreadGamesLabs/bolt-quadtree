@@ -381,6 +381,7 @@ fn bench_bolt(entities_seed: &[Entity], bounds: Bounds, ticks: usize) -> BenchRe
         min_size: bench_min_size(),
         looseness: bench_looseness(),
         large_entity_threshold_factor: 0.0,
+        auto_expand_bounds: false,
         profile_summary: false,
         profile_detail: false,
         profile_limit: 5,

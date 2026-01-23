@@ -237,6 +237,7 @@ fn main() {
         min_size: MIN_SIZE,
         looseness: 1.0,
         large_entity_threshold_factor: 0.0,
+        auto_expand_bounds: false,
         profile_summary: false,
         profile_detail: false,
         profile_limit: 5,

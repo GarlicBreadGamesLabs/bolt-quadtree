@@ -260,15 +260,18 @@ impl QuadTreeInner {
         } else {
             None
         };
+        let force_rebuild = self.force_rebuild;
         let has_queued_ops = !self.insertions.is_empty()
             || !self.removals.is_empty()
             || !self.node_removals.is_empty()
-            || !self.reinsertions.is_empty();
+            || !self.reinsertions.is_empty()
+            || force_rebuild;
 
         if !self.update_pending {
-            if self.normalization == Normalization::Hard {
+            if self.normalization == Normalization::Hard || force_rebuild {
                 let start = normalize_hard_start.map(|_| std::time::Instant::now());
                 self.normalize();
+                self.force_rebuild = false;
                 if let Some(start) = start {
                     eprintln!(
                         "normalize_hard: normalize(no update): {:.3}ms",
@@ -290,6 +293,7 @@ impl QuadTreeInner {
         if has_queued_ops {
             let start = normalize_hard_start.map(|_| std::time::Instant::now());
             self.normalize();
+            self.force_rebuild = false;
             if let Some(start) = start {
                 let elapsed = start.elapsed().as_secs_f64() * 1000.0;
                 normalize_ms += elapsed;
@@ -354,22 +358,27 @@ ops(i={}, r={}, nr={}, re={})",
     }
 
     fn normalize_full(&mut self) {
-        if self.normalization == Normalization::Normal && !self.update_pending {
+        if self.normalization == Normalization::Normal && !self.update_pending && !self.force_rebuild
+        {
             return;
         }
 
+        let force_rebuild = self.force_rebuild;
         let has_queued_ops = !self.insertions.is_empty()
             || !self.removals.is_empty()
             || !self.node_removals.is_empty()
-            || !self.reinsertions.is_empty();
+            || !self.reinsertions.is_empty()
+            || force_rebuild;
 
         if !self.update_pending {
             self.normalize();
+            self.force_rebuild = false;
             return;
         }
 
         if has_queued_ops {
             self.normalize();
+            self.force_rebuild = false;
         }
 
         self.update_entities();

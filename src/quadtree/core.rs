@@ -219,8 +219,11 @@ impl QuadTreeInner {
             update_pending: false,
             use_avx2,
             large_entity_threshold,
+            large_entity_threshold_factor: config.large_entity_threshold_factor,
             large_entities: Vec::new(),
             large_entity_slots: vec![0],
+            auto_expand_bounds: config.auto_expand_bounds,
+            force_rebuild: false,
             split_threshold,
             merge_threshold,
             max_depth,
@@ -315,13 +318,17 @@ impl QuadTreeInner {
     }
 
     #[inline(always)]
-    pub(crate) fn ensure_extent_in_bounds(&self, extent: RectExtent) -> QuadtreeResult<()> {
+    pub(crate) fn ensure_extent_in_bounds(&mut self, extent: RectExtent) -> QuadtreeResult<()> {
         let bounds = self.root_half.to_rect_extent();
         if extent.min_x < bounds.min_x
             || extent.min_y < bounds.min_y
             || extent.max_x > bounds.max_x
             || extent.max_y > bounds.max_y
         {
+            if self.auto_expand_bounds {
+                self.expand_root_to_include(bounds, extent);
+                return Ok(());
+            }
             return Err(QuadtreeError::RectExtentOutOfBounds {
                 min_x: extent.min_x,
                 min_y: extent.min_y,
@@ -334,6 +341,30 @@ impl QuadTreeInner {
             });
         }
         Ok(())
+    }
+
+    fn expand_root_to_include(&mut self, bounds: RectExtent, extent: RectExtent) {
+        let new_bounds = RectExtent::from_min_max_unchecked(
+            bounds.min_x.min(extent.min_x),
+            bounds.min_y.min(extent.min_y),
+            bounds.max_x.max(extent.max_x),
+            bounds.max_y.max(extent.max_y),
+        );
+        if new_bounds.min_x == bounds.min_x
+            && new_bounds.min_y == bounds.min_y
+            && new_bounds.max_x == bounds.max_x
+            && new_bounds.max_y == bounds.max_y
+        {
+            return;
+        }
+
+        self.root_half = HalfExtent::from_rect_extent(new_bounds);
+        if self.large_entity_threshold_factor > 0.0 {
+            let root_size = self.root_half.w.max(self.root_half.h) * 2.0;
+            self.large_entity_threshold = root_size * self.large_entity_threshold_factor;
+        }
+        self.normalization = Normalization::Hard;
+        self.force_rebuild = true;
     }
 
     #[inline(always)]

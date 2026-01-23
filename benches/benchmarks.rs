@@ -234,6 +234,7 @@ fn cleanup_merge_benchmark(c: &mut Criterion) {
         min_size: 1.0,
         looseness: 1.0,
         large_entity_threshold_factor: 0.0,
+        auto_expand_bounds: false,
         profile_summary: false,
         profile_detail: false,
         profile_limit: 5,
